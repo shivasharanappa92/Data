@@ -371,6 +371,12 @@ var.update({"hight":6, "weight":55, "phone_num":'xxxxxx'})
 print(var.values())
 
 Q61. Create a nested dictionary and access all the element in the inner dictionary.
+
+Dict_main = { 'Dict1': {'name': 'Pavan', 'age': '22'},
+         'Dict2': {'name': 'Rajesh', 'age': '25'}}
+
+for i,j in Dict_main['Dict2'].items():
+    print(i,":",j)
 Q62. What is the use of get() function?
 Returns the value of the specified  key
 Q63. What is the use of items() function?
