@@ -1,0 +1,37 @@
+Q1.select * from CITY where countrycode='USA' and population >100000;
+
+Q2.select Name from CITY where countrycode='USA' and Population >120000;
+
+Q3.Select * from CITY;
+
+Q4.Select * from CITY where ID=1661
+
+Q5. Select * from CITY where countrycode='JPN';
+
+Q6.Select Name from CITY where Countrycode='JPN'
+
+Q7.Select CITY,STATE from STATION;
+
+Q8.Select Distinct CITY from STATION where (ID%2)=0;
+
+Q9. Select count(city)-count(Distinct(CITY))as differenc from STATION;
+
+Q10.
+
+Q11.  Select DISTINCT(Name) from City where Name regexp'^[aeiou]' ;
+
+Q12.Select DISTINCT(NAME) from CITY where Name regexp'[aeiou]$';
+
+Q13.Select DISTINCT(Name) from City where Name regexp'^[^aeiou]' ;
+
+Q14. Select DISTINCT(NAME) from CITY where Name regexp'[^aeiou]$';
+
+Q15.Select Distinct(Name) from CITY where  Name regexp'^[aeiou]' or Name regexp'[aeiou]$';
+
+Q16.Select Distinct(Name) from CITY where  Name regexp'^[aeiou]' AND Name regexp'[aeiou]$';
+
+Q17.Select PRODUCT_ID ,PRODUCT_NAME from PRODUCT AS P,SALES AS S WHERE P.PRODUCT_ID=S.PRODUCT_ID AND SALES_DATE between '2019-01-01' and '2019-03-31';
+
+Q18.select id from VIEWS where author_id==viwer_id;
+
+Q19.
