@@ -16,7 +16,8 @@ Q8.Select Distinct CITY from STATION where (ID%2)=0;
 
 Q9. Select count(city)-count(Distinct(CITY))as differenc from STATION;
 
-Q10.
+Q10.(select CITY, length(CITY) as city_len from STATION order by city_len asc, CITY asc limit 1) union
+    (select CITY, length(city) as city_len from STATION order by city_len desc, CITY asc limit 1);
 
 Q11.  Select DISTINCT(Name) from City where Name regexp'^[aeiou]' ;
 
@@ -34,4 +35,40 @@ Q17.Select PRODUCT_ID ,PRODUCT_NAME from PRODUCT AS P,SALES AS S WHERE P.PRODUCT
 
 Q18.select id from VIEWS where author_id==viwer_id;
 
-Q19.
+Q19.select round(100*r2.immediate_orders/count(d1.delivery_id), 2) as immediate_percentage
+    from Delivery r1,
+    (select count(order_date) as immediate_orders
+    from Delivery 
+    where (order_date = customer_pref_delivery_date)) r2
+ Q20. 
+ 
+ Q21. select employee_id,count(team_id) over(partition by team_id order by employee_id)as team_size from employee;
+ 
+ Q22. SELECT c.country_name,
+       CASE
+           WHEN AVG(w.weather_state * 1.0) <= 15.0 THEN 'Cold'
+           WHEN AVG(w.weather_state * 1.0) >= 25.0 THEN 'Hot'
+           ELSE 'Warm'
+       END AS weather_type
+      FROM Countries  c
+      where  Weather  w ON c.country_id = w.country_id
+      and w.day BETWEEN '2019-11-01' AND '2019-11-30'
+      GROUP BY c.country_id;
+Q23. select p.product_id, 
+    round(sum(p.price * u.units)/sum(u.units), 2) as average_price
+    from Prices p
+    left join UnitsSold u
+    on p.product_id = u.product_id and 
+    datediff(u.purchase_date, p.start_date) >= 0 and
+    datediff(p.end_date, u.purchase_date) >= 0
+    group by p.product_id
+  
+ Q24. select player_id, min(event_date) as first_login
+     from Activity 
+     group by player_id;
+     
+ Q25. select player_id, device_id from Activity where Player_id inselect player_id, min(event_date) as first_login
+     from Activity 
+     group by player_id) ;
+  
+ Q26. 
