@@ -71,4 +71,148 @@ Q23. select p.product_id,
      from Activity 
      group by player_id) ;
   
- Q26. 
+ Q26. select product_name, sum(o.unit)as unit from product c , orders o 
+      where p.product_id=o.product_id and o.order_date between 2020-02-01 and 2020-02-29
+      group by o.product_id having sum(o.units)>=100;
+      
+ Q27. SELECT *
+     FROM Users
+     WHERE REGEXP_LIKE(mail, '^[a-zA-Z][a-zA-Z0-9\_\.\-]*@leetcode.com')
+      
+  Q28. select customer_id, name from Customers
+       where customer_id IN (
+       select a.customer_id from Orders AS a
+        join Product AS b
+        ON a.product_id = b.product_id
+       where a.order_date BETWEEN '2020-06-01' and '2020-06-30'
+        group bya.customer_id
+       HAVING SUM(a.quantity * b.price) >= 100
+       )
+       and customer_id IN (
+       select a.customer_id from Orders AS a
+       JOIN Product AS b
+        ON a.product_id = b.product_id
+         where a.order_date BETWEEN '2020-07-01' and '2020-07-31'
+        group bya.customer_id
+        HAVING SUM(a.quantity * b.price) >= 100;
+    
+   Q29. select distinct title
+        from Content 
+        join TVProgram using(content_id)
+        where kids_content = 'Y' 
+	    and content_type = 'Movies' 
+	    and (month(program_date), year(program_date)) = (6, 2020);
+   
+   Q30. select q.id, q.year, ifnull(n.npv,0) as npv
+        from queries as q
+        left join npv as n
+        on (q.id, q.year) = (n.id, n.year)
+        
+   Q31. select unique_id, name from 
+        EmployeeUNq en right join  employees e on en.id=e.id;
+        
+   Q32. select name, sum(ifnull(distance, 0)) as travelled_distance
+        from rides r
+        right join users u
+       on r.user_id = u.id
+       group by name
+       order by  travelled_distance  desc, name asc;
+       
+       
+   Q33. select product_name, sum(o.unit)as unit from product c , orders o 
+      where p.product_id=o.product_id and o.order_date between 2020-02-01 and 2020-02-29
+      group by o.product_id having sum(o.units)>=100;
+      
+   Q35. (select name results
+        from Users
+        left join Movie_Rating
+         using (user_id)
+         group by user_id
+        order by count(rating) desc, name
+        limit 1)
+
+      union
+
+      (select title
+       from Movies
+       left join Movie_Rating
+       using(movie_id)
+       where left(created_at,7) = '2020-02'
+       group by movie_id
+       order by avg(rating) desc, title
+       limit 1)
+   Q36. elect name, sum(ifnull(distance, 0)) as travelled_distance
+        from rides r
+        right join users u
+       on r.user_id = u.id
+       group by name
+       order by  travelled_distance  desc, name asc;
+       
+  Q37.  select unique_id, name from 
+        EmployeeUNq en right join  employees e on en.id=e.id;
+        
+        
+  Q38. select s.id, s.name from Student s ,    
+        Departments d where s.department_id<>d.id;
+        
+  Q39. wiht result as(select 
+        case when from_id < to_id then from_id else to_id end as Person 1,
+        case when from_id > to_id then from_id else to_id end as Person 2,
+        duration
+        from call)
+        select person 1, person 2, count(1) as call_count,
+        sum(duration) as total_dureation
+        from result group by person 1, person 2;
+        
+        
+     Q40. select p.product_id, 
+    round(sum(p.price * u.units)/sum(u.units), 2) as average_price
+     from Prices p
+     left join UnitsSold u
+      on p.product_id = u.product_id and 
+      datediff(u.purchase_date, p.start_date) >= 0 and
+       datediff(p.end_date, u.purchase_date) >= 0
+       group by p.product_id;
+       
+   Q41. select name as warehouse_name, sum(units * vol) as volume
+          from Warehouse w
+           join (select product_id, Width*Length*Height as vol
+            from Products) p
+           on w.product_id = p.product_id
+           group by name
+           
+ Q42. select a.sale_date, (a.sold_num - b.sold_num) as diff
+       from Sales a left join Sales b
+       on a.sale_date = b.sale_date
+       where a.fruit = 'apples' and b.fruit = 'oranges'
+       
+       
+  Q43. WITH CTE AS (
+       SELECT
+       player_id, min(event_date) as event_start_date
+        from
+        Activity
+        group by player_id )
+
+       SELECT
+        round((count(distinct c.player_id) / (select count(distinct player_id) from activity)),2)as fraction
+        FROM
+      CTE c
+       JOIN Activity a
+       on c.player_id = a.player_id
+        and datediff(c.event_start_date, a.event_date) = -1;
+  Q44. select 
+    a.dept_name,
+    coalesce(count(student_id), 0) student_number
+     from 
+    department a 
+     left join
+      student b
+       on 
+      a.dept_id = b.dept_id
+     group by a.dept_name
+     order by student_number desc, a.dept_name asc;
+     
+     
+  Q45. 
+ 
