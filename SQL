@@ -264,6 +264,157 @@ Q46. select project_id, employee_id
    order by group_id,totalScores desc,player_id) as temp
    group by group_id
    order by group_id,totalScores desc,player_id
+ 
+Q51
+Q52. Select Name from Customer where referee_id<>2;
 
+Q53. select Name from customers c where id not in(select customerid from orders);
+
+Q54. Select id, COUNT(TEAM_ID) over(partition by team_id) as team_size from employee  order by id;
+
+Q55. 
+
+Q56. select player_id, device_id from Activity where Player_id inselect player_id, min(event_date) as first_login
+     from Activity 
+     group by player_id) ;
+     
+Q57. select
+     customer_number 
+     from
+     (select customer_number, count(order_number) order_count 
+      from orders group by customer_number) a 
+      order by order_count desc limit 1;
+      
+ Q58. select c1.seat_id
+      from cinema c1, cinema c2
+       where ((c1.seat_id = c2.seat_id+1) or
+       (c1.seat_id = c2.seat_id-1)) and 
+       (c1.free = 1) and (c2.free = 1)
+       group by c1.seat_id;
+       
+   Q59. select name
+       from salesperson
+       where sales_id
+       not in (
+       select s.sales_id from orders o
+       inner join salesperson s ON o.sales_id = s.sales_id
+        inner join company c ON o.com_id = c.com_id
+         where c.name = 'RED'
+          );
+  Q60.
+  
+  Q61. select min(abs(p2.x-p1.x)) as shortest
+        from point p1, point p2
+        where p1.x != p2.x;
+   
+  Q62. SELECT actor_id, director_id
+       FROM ActorDirector
+       GROUP BY actor_id, director_id
+       HAVING COUNT(*) >= 3;
+       
+  Q63. select p.product_name, s.year, s.price
+       from Product p
+        join Sales s
+        on s.product_id = p.product_id;
+
+ Q64. select project_id , round(avg(experience_years), 2) as average_years
+     from project as p
+     left join employee as e
+     on p.employee_id = e.employee_id
+     group by project_id;
+ 
+ Q65. select a.seller_id
+       from 
+       (select seller_id, sum(price) as sum 
+       from Sales
+        group by seller_id) a 
+        where a.sum = (select max(b.sum)from(select seller_id, sum(price) as sum 
+        from Sales
+        group by seller_id)b )
+
+  Q66. select distinct buyer_id from Sales s
+       join Product p
+       on p.product_id = s.product_id
+       where p.product_name = 'S8'
+       and buyer_id not in
+       (
+        select buyer_id from Sales s
+        join Product p on p.product_id = s.product_id
+        where p.product_name = 'iPhone'
+       );
+       
+   Q67. select c1.visited_on, sum(c2.amount) as amount, 
+         round(avg(c2.amount), 2) as average_amount
+         from (select visited_on, sum(amount) as amount 
+         from customer group by visited_on) c1
+         join (select visited_on, sum(amount) as amount 
+         from customer group by visited_on) c2
+         on datediff(c1.visited_on, c2.visited_on) between 0 and 6
+         group by c1.visited_on
+         having count(c2.amount) = 7;
+	 
+  Q68.select s1.gender, s1.day, sum(s2.score_points) as total from Scores s1, Scores s2
+      where s1.gender = s2.gender and s1.day >= s2.day
+      group by s1.gender, s1.day
+      order by s1.gender, s1.day;
+  
+ Q69. select
+      min(log_id) AS start_id,
+      max(log_id) AS end_id
+      from (select
+      log_id,
+      log_id - ROW_NUMBER() OVER (ORDER BY log_id) AS rk
+      from Logs) t
+      group by rk;
+      
+ Q70. select a.student_id, a.student_name, b.subject_name, count(c.subject_name) as attended_exams
+       from Students as a
+       join Subjects as b
+       left join Examinations as c
+       on a.student_id = c.student_id and b.subject_name = c.subject_name
+       group by a.student_id, b.subject_name;
+       
+ Q71. select e3.employee_id from Employees e1, Employees e2, Employees e3
+      where e1.manager_id = 1 and e2.manager_id = e1.employee_id and e3.manager_id = e2.employee_id and e3.employee_id != 1;
+     
+ Q72. SELECT
+      Date_format(trans_date, '%Y-%m') AS month,
+      country AS country,
+      count(id) AS trans_count,
+      SUM(case WHEN state = 'approved' THEN 1 ELSE 0 END) AS approved_count,
+      SUM(amount) AS trans_total_amount,
+      SUM(case WHEN state = 'approved' THEN amount ELSE 0 END) AS approved_total_amount
+       FROM
+       transactions
+       GROUP BY
+       Date_format(trans_date, '%Y-%m') ,
+       country;
+       
+ Q73. select round(avg(daily_count), 2) as average_daily_percent
+      from (select count(distinct b.post_id)/count(distinct a.post_id)*100 as daily_count
+       from actions a
+       left join removals b
+       on a.post_id = b.post_id
+        where extra = 'spam'
+        group by action_date
+        ) b
+	
+ Q74. 
+ 
+ Q75. with CTE AS (
+       select
+        player_id, min(event_date) as event_start_date
+        from
+        Activity
+         group by player_id )
+
+       select
+       round((count(distinct c.player_id) / (select count(distinct player_id) from activity)),2)as fraction
+       from
+        CTE c
+        join Activity a
+         on c.player_id = a.player_id
+        and datediff(c.event_start_date, a.event_date) = -1;
+ Q76. 
    
  
