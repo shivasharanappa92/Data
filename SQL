@@ -265,14 +265,22 @@ Q46. select project_id, employee_id
    group by group_id
    order by group_id,totalScores desc,player_id
  
-Q51
+Q51. select a.sale_date, (a.sold_num - b.sold_num) as diff
+       from Sales a left join Sales b
+       on a.sale_date = b.sale_date
+       where a.fruit = 'apples' and b.fruit = 'oranges'
+       
 Q52. Select Name from Customer where referee_id<>2;
 
 Q53. select Name from customers c where id not in(select customerid from orders);
 
 Q54. Select id, COUNT(TEAM_ID) over(partition by team_id) as team_size from employee  order by id;
 
-Q55. 
+Q55. select customer_id
+       from Customer
+      group by customer_id
+     having count(distinct product_key) = 
+        (select count(distinct product_key) from Product)
 
 Q56. select player_id, device_id from Activity where Player_id inselect player_id, min(event_date) as first_login
      from Activity 
@@ -301,7 +309,12 @@ Q57. select
         inner join company c ON o.com_id = c.com_id
          where c.name = 'RED'
           );
-  Q60.
+  Q60. select
+     customer_number 
+     from
+     (select customer_number, count(order_number) order_count 
+      from orders group by customer_number) a 
+      order by order_count desc limit 1;
   
   Q61. select min(abs(p2.x-p1.x)) as shortest
         from point p1, point p2
@@ -399,7 +412,15 @@ Q57. select
         group by action_date
         ) b
 	
- Q74. 
+ Q74. select
+      min(log_id) AS start_id,
+      max(log_id) AS end_id
+      from (select
+      log_id,
+      log_id - ROW_NUMBER() OVER (ORDER BY log_id) AS rk
+      from Logs) t
+      group by rk;
+      
  
  Q75. with CTE AS (
        select
@@ -426,7 +447,19 @@ Q57. select
              group by company_id) as t
        on Salaries.company_id = t.company_id
 
-Q77.
+Q77. select distinct Student.*
+      from Student inner join Exam
+      on Student.student_id = Exam.student_id
+where student.student_id not in 
+    (select e1.student_id
+    from Exam as e1 inner join
+        (select exam_id, min(score) as min_score, max(score) as max_score
+        from Exam
+        group by exam_id) as e2
+    on e1.exam_id = e2.exam_id
+    where e1.score = e2.min_score or e1.score = e2.max_score)
+order by student_id;
+
 
 Q78. select co.name AS country
       from person p
@@ -438,9 +471,163 @@ Q78. select co.name AS country
        
  Q79. Select name from Employee order by Name;
  
- Q80. 
+ Q80. select distinct username, activity, startDate, endDate
+       from
+       (select u.*,
+           rank() over (partition by username order by startDate desc) as rnk,
+           count(activity) over (partition by username) as num
+        from UserActivity u) t
+        where (num <> 1 and rnk = 2) or (num = 1 and rnk = 1)
  
- Q81. 
+ Q81. Select  NAME from STUDENTS where MARKS > 75 ORDER BY RIGHT(NAME,3), ID ASC;
  
- Q82.
+ Q82.select name from employees where salary >2000 and month< 10 order by id;
+  
+ Q83. Select CASE
+       WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
+       WHEN A = B AND B = C THEN 'Equilateral'
+       WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+       ELSE 'Scalene'
+       END
+       FROM TRIANGLES; 
+ 
+ Q84. select max(months * salary), count(months * salary) 
+      from Employee where (months * salary) 
+      = (select max(months * salary) from Employee);
+      
+ Q85. SELECT (name || '(' || SUBSTR(occupation,1,1) || ')') FROM occupations ORDER BY name;
+      SELECT ('There are a total of ' || COUNT(occupation) || ' ' || LOWER(occupation) || 's' || '.') 
+      FROM occupations GROUP BY occupation ORDER BY COUNT(occupation), occupation ASC;
+      
+ Q86. Select Doctor, Professor, Singer, Actor FROM (
+      Select ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rn, name, occupation FROM       occupations) 
+      Pivot
+     (MAX(name) FOR occupation IN ('Doctor' as Doctor,'Professor' as Professor, 'Singer' as Singer, 'Actor' as Actor)) 
+      ORDER BY rn;
+ 
+ Q87.select  node,
+     case when parent is null then 'Root'
+     when node not in (select distinct parent from Binary_Tree where parent is not null) then 'Leaf'
+     else 'Internal node' end as Type from binary_Tree;
+     
+     
+ Q88. select *,((curr_year-pervision_year_amount) /pervision_year_amount * 100)as year_rate from 
+      (select *,spend as curr_year,lag(spend,1) over(partition by transaction_i
+       d order by year)as pervision_year_amount 
+       from user_transactions)result;
+       
+       
+  Q89.select a.user_id, a.status, d.paid
+        from advertiser a
+        left join daily_pay d
+         using (user_id)
+        UNION ALL
+      select d.user_id, a.status, d.paid
+        from advertiser a
+       using daily_pay d
+       using (user_id)
+       WHERE a.user_id IS NULL
+       
+ Q90. select s1.gender, s1.day, sum(s2.score_points) as total from Scores s1, Scores s2
+       where s1.gender = s2.gender and s1.day >= s2.day
+      group by s1.gender, s1.day
+       order by s1.gender, s1.day
+       
+  Q91. SELECT co.name AS country
+       FROM person p
+       INNER JOIN country co ON SUBSTRING(phone_number, 1, 3) = country_code
+       INNER JOIN calls c ON (p.id = c.caller_id OR p.id = c.callee_id)
+      GROUP BY co.name
+      HAVING AVG(duration) > (SELECT AVG(duration) as avg_duration FROM calls)
+       ORDER BY NULL;
+       
+   Q92. select t1.install_date as install_dt, count(t1.install_date) as installs,
+         round(count(t2.event_date) / count(*), 2) as Day1_retention
+         from (
+          select player_id, min(event_date) as install_date
+          from Activity
+           group by 1
+            ) t1
+           left join Activity t2 
+              on date_add(t1.install_date, interval 1 day) = t2.event_date
+            and t1.player_id = t2.player_id
+              group by 1
+	      
+  Q93. select group_id,player_id from 
+        (select group_id,player_id,sum((
+           case when player_id = first_player then first_score
+         when player_id = second_player then second_score
+         end
+         )) as totalScores
+          from Players p,Matches m
+           where p.player_id = m.first_player
+               or p.player_id = m.second_player
+             group by group_id,player_id
+            order by group_id,totalScores desc,player_id) as temp
+             group by group_id
+              order by group_id,totalScores desc,player_id
+	      
+ Q94.  select distinct Student.*
+        from Student inner join Exam
+          on Student.student_id = Exam.student_id
+           where student.student_id not in 
+            (select e1.student_id
+             from Exam as e1 inner join
+              (select exam_id, min(score) as min_score, max(score) as max_score
+               from Exam
+              group by exam_id) as e2
+            on e1.exam_id = e2.exam_id
+          where e1.score = e2.min_score or e1.score = e2.max_score)
+         order by student_id
+	
+ 
+
+Q95. select distinct username, activity, startDate, endDate
+         from
+    (select u.*,
+           rank() over (partition by username order by startDate desc) as rnk,
+           count(activity) over (partition by username) as num
+    from UserActivity u) t
+where (num <> 1 and rnk = 2) or (num = 1 and rnk = 1);
+
+Q96. select CEIL(AVG(Salary)-AVG(REPLACE(Salary,'0','')))
+from  EMPLOYEES
+
+Q97.  select MAX(salary*months), COUNT(*) from Employee where (salary * months) >= (select MAX(salary * months) from employee);
+
+Q98. select X, Y from (
+      select X, Y from Functions where X=Y GROUP BY X, Y HAVING COUNT(*)=2
+      UNION
+      select f1.X, f1.Y from Functions f1, Functions f2 
+      where f1.X < f1.Y 
+      and f1.X=f2.Y 
+       and f2.X=f1.Y
+        )t
+       ORDER BY X, Y;
+       
+   Q99. select S.hacker_id, name
+         from SUBMISSIONS AS S
+         join HACKERS AS H ON S.hacker_id = H.hacker_id
+         join Challenges AS C ON S.challenge_id = C.challenge_id
+          join Difficulty AS D ON C.difficulty_level = D.difficulty_level
+         where S.score = D.score
+          GROUP BY name, S.hacker_id
+          HAVING count(S.challenge_id) > 1
+           ORDER BY count(S.challenge_id) DESC, S.hacker_id
+	   
+Q100. select START_DATE, MIN(END_DATE)
+      from
+      (select START_DATE
+      from PROJECTS
+      where START_DATE NOT IN
+       (select END_DATE
+        from PROJECTS)) A,
+       (select END_DATE
+        from PROJECTS
+       where END_DATE NOT IN
+       (select START_DATE
+        from PROJECTS)) B
+     where START_DATE < END_DATE
+     GROUP BY START_DATE
+      ORDER BY (MIN(END_DATE) - START_DATE), START_DATE;
  
