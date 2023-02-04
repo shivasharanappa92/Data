@@ -40,7 +40,8 @@ Q19.select round(100*r2.immediate_orders/count(d1.delivery_id), 2) as immediate_
     (select count(order_date) as immediate_orders
     from Delivery 
     where (order_date = customer_pref_delivery_date)) r2
- Q20. 
+    
+ Q20.  Select count(city)-count(Distinct(CITY))as differenc from STATION;
  
  Q21. select employee_id,count(team_id) over(partition by team_id order by employee_id)as team_size from employee;
  
