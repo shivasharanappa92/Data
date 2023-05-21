@@ -1,0 +1,26 @@
+step 1:hadoop fs -put AirQualityUCI.csv /tmp
+Step 2: create table AirQuality
+       (air_date Date,
+      air_time Timestamp,
+      air_co int,
+     air_pt08_s1 int,
+     air_nmhc int,
+     air_c6h6 int,
+     air_pt08_s2 int,
+     air_NO2 int,
+     air_pt08_s5 int,
+     air_t int,
+     air_rh int,
+     air_ah int)
+    row format delimited
+    fields terminated by ';'
+     stored as TEXTFILE
+     tblproperties ("skip.header.line.count" = "1"); 
+  
+Step 3: load data inpath '/tmp/AirQuality_.csv' into table AirQuality;
+
+step 4: Select * from  AirQuality;
+        select * from  AirQuality Where air_date >'10/03/2004';
+        select * from  AirQuality limit 10;
+Step 5: 
+
