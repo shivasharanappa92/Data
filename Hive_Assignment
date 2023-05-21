@@ -13,7 +13,7 @@ Step 2: create table AirQuality
      air_rh int,
      air_ah int)
     row format delimited
-    fields terminated by ';'
+    fields terminated by ','
      stored as TEXTFILE
      tblproperties ("skip.header.line.count" = "1"); 
   
@@ -22,5 +22,40 @@ Step 3: load data inpath '/tmp/AirQuality_.csv' into table AirQuality;
 step 4: Select * from  AirQuality;
         select * from  AirQuality Where air_date >'10/03/2004';
         select * from  AirQuality limit 10;
-Step 5: 
+
+Step 5: select air_date ,count(*) from   airquality group by air_date;
+
+Step 6: select air_date , count(1) from AirQuality gropu by air_date;
+
+Step 7: select * from  AirQuality Where air_date >'10/03/2004';
+        select * from Airquality where air_co>10;
+
+Step 9:alter table  AirQuality  change air_co  air_c0 int;
+       alter table AirQuality rename to Air_quality;
+       alter table  AirQuality add columns(number int);
+       
+Step 10: drop table  AirQuality;
+
+Step 11:select * from  AirQuality order by air_date;
+       select * from  AirQuality order by air_date ASC;
+       select * from  AirQuality order by air_date DESC;
+       
+Step 12:  select * from AirQuality where air_NO2>1000;
+          Select air_date, air_co int,
+     air_pt08_s1 int,
+     air_nmhc int,
+     air_c6h6 int,
+     air_pt08_s2 int  from  AirQuality where air_date='10/03/2004';
+     
+Step 13: select air_date, air_co int,
+     air_pt08_s1 int,
+     air_nmhc int,
+     air_c6h6 int,
+     air_pt08_s2 int  from  AirQuality sort by air_date;
+     
+Step 14: select distinct air_co from AirQuality; 
+Step 16: select * from AirQuality union select * from final_output;
+step 17:create view final_output as select *  from AirQuality where air_date >='11/03/2004';
+
+        
 
