@@ -1,0 +1,260 @@
+Step 1 hadoop fs -put Sales_data.csv /tmp
+Step 2 create table Sales_data_CSV(
+ORDERNUMBER int,
+QUANTITYORDERED int,
+PRICEEACH float,
+ORDERLINENUMBER int,
+SALES int,
+STATUS string,
+QTR_ID int,
+MONTH_ID int,
+YEAR_ID int,
+PRODUCTLINE string,
+MSRP int,
+PRODUCTCODE string,
+PHONE  float,
+CITY string,
+STATE string,
+POSTALCODE int,
+COUNTRY string,
+TERRITORY string,
+CONTACTLASTNAME string,
+CONTACTFIRSTNAME string,
+DEALSIZE string) 
+row format delimited
+fields terminated by ','
+stored as TEXTFILE
+tblproperties ("skip.header.line.count" = "1");
+
+Step 3 load data  inpath  '/tmp/Sales_data.csv'  into table Sales_data_CSV;
+Step 3  create table Sales_data_ORC(
+ORDERNUMBER int,
+QUANTITYORDERED int,
+PRICEEACH float,
+ORDERLINENUMBER int,
+SALES int,
+STATUS string,
+QTR_ID int,
+MONTH_ID int,
+YEAR_ID int,
+PRODUCTLINE string,
+MSRP int,
+PRODUCTCODE string,
+PHONE  float,
+CITY string,
+STATE string,
+POSTALCODE int,
+COUNTRY string,
+TERRITORY string,
+CONTACTLASTNAME string,
+CONTACTFIRSTNAME string,
+DEALSIZE string) 
+row format delimited
+fields terminated by ','
+STORED AS ORC
+tblproperties ("skip.header.line.count" = "1");
+
+Step 4 insert overwrite table Sales_data_ORC select * from Sales_data_CSV;
+
+Step 5 select year_id, count(*) from Sales_data_CSV  group by year_id order by year_id;
+       year_id _c1
+       2003    1000
+       2004    1345
+       2005    478
+
+Step 6:select PRODUCTLINE, max(orderline) from Sales_data_csv;
+          productline     _c1
+          Classic Cars    10425
+          Motorcycles     10417
+          Planes  10416
+          Ships   10415
+          Trains  10414
+          Trucks and Buses        10425
+           Vintage Cars    10424
+           
+
+Step 8:select QTR_ID, count(sales) from Sales_data_csv group by qtr_id order by qtr_id;
+Minato-ku       1       9
+NYC     1       10
+Nantes  1       15
+Nashua  1       4
+New Bedford     1       11
+Bergamo 1       18
+Newark  1       3
+North Sydney    1       19
+Osaka   1       17
+Oulu    1       17
+Paris   1       19
+Pasadena        1       13
+Philadelphia    1       6
+Reims   1       18
+San Diego       1       25
+San Francisco   1       19
+San Rafael      1       74
+Singapore       1       8
+South Brisbane  1       6
+Stavern 1       16
+Toulouse        1       5
+Versailles      1       1
+Boras   1       8
+Brickhaven      1       8
+Brisbane        1       4
+Bruxelles       1       5
+Burbank 1       10
+Burlingame      1       4
+Cambridge       1       6
+Charleroi       1       3
+Cowes   1       8
+Dublin  1       9
+Espoo   1       15
+Frankfurt       1       12
+Gensve  1       14
+Glendale        1       1
+Graz    1       3
+Helsinki        1       6
+Kobenhavn       1       15
+Lille   1       6
+London  1       3
+Los Angeles     1       8
+Lule    1       2
+Lyon    1       30
+Madrid  1       104
+Makati City     1       16
+Manchester      1       16
+Marseille       1       1
+Melbourne       1       15
+Singapore       2       27
+San Rafael      2       2
+San Jose        2       40
+Salzburg        2       28
+Reims   2       5
+Reggio Emilia   2       14
+Philadelphia    2       3
+Paris   2       22
+Oulu    2       5
+Osaka   2       3
+Newark  2       18
+New Haven       2       9
+Nantes  2       17
+NYC     2       44
+Montreal        2       18
+Minato-ku       2       7
+Melbourne       2       17
+Marseille       2       17
+Madrid  2       88
+London  2       9
+Liverpool       2       23
+Las Vegas       2       13
+Kobenhavn       2       13
+Glendale        2       8
+Glen Waverly    2       5
+Chatswood       2       13
+Espoo   2       6
+Allentown       2       2
+Barcelona       2       1
+Boston  2       23
+Brickhaven      2       2
+Bridgewater     2       17
+Bruxelles       2       5
+Cambridge       2       5
+Charleroi       2       1
+Tsawassen       2       12
+Strasbourg      2       19
+Brickhaven      3       33
+Tsawassen       3       14
+Toulouse        3       3
+Torino  3       26
+South Brisbane  3       4
+Singapore       3       26
+San Rafael      3       57
+Salzburg        3       2
+Reims   3       4
+Reggio Emilia   3       15
+Pasadena        3       16
+Paris   3       8
+Oulu    3       10
+Oslo    3       13
+North Sydney    3       14
+New Bedford     3       16
+Nantes  3       20
+NYC     3       18
+Munich  3       14
+Madrid  3       19
+Las Vegas       3       10
+Helsinki        3       11
+Glendale        3       2
+Glen Waverly    3       2
+Gensve  3       17
+Espoo   3       9
+Dublin  3       7
+Chatswood       3       19
+Charleroi       3       1
+Cambridge       3       13
+Burlingame      3       11
+Bruxelles       3       15
+Brisbane        3       11
+Boston  3       5
+Boras   3       14
+Bergen  3       4
+Allentown       3       20
+Aaarhus 4       27
+Allentown       4       9
+Barcelona       4       22
+Bergamo 4       30
+Bergen  4       25
+Boras   4       16
+Boston  4       16
+Brickhaven      4       4
+Bridgewater     4       8
+Burbank 4       3
+Burlingame      4       19
+Cambridge       4       14
+Charleroi       4       3
+Chatswood       4       14
+Cowes   4       18
+Frankfurt       4       10
+Glen Waverly    4       16
+Glendale        4       11
+Graz    4       12
+Helsinki        4       13
+Kobenhavn       4       8
+Koln    4       26
+Las Vegas       4       6
+Lille   4       14
+Liverpool       4       6
+London  4       26
+Los Angeles     4       6
+Lule    4       17
+Lyon    4       11
+Madrid  4       93
+Makati City     4       10
+Manchester      4       35
+Marseille       4       7
+Melbourne       4       23
+Minato-ku       4       16
+Montreal        4       4
+NYC     4       80
+Nantes  4       8
+Nashua  4       30
+New Bedford     4       34
+New Haven       4       8
+North Sydney    4       13
+Oslo    4       11
+Paris   4       21
+Pasadena        4       1
+Philadelphia    4       35
+Reggio Emilia   4       10
+Reims   4       14
+Salzburg        4       10
+San Francisco   4       43
+San Rafael      4       47
+Sevilla 4       15
+Singapore       4       18
+South Brisbane  4       5
+Stavern 4       16
+Toulouse        4       12
+Vancouver       4       22
+Versailles      4       17
+White Plains    4       26
+
+
